@@ -38,7 +38,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8f7e67b5626124d0db9886e6cd2aacff, type: 3}
-  m_Name: CuttableRope
+  m_Name: Level0Rope1
   m_EditorClassIdentifier: 
   m_Empty: 0
   m_ActiveParticleCount: 77
