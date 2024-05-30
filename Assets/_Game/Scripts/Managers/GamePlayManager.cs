@@ -1,15 +1,8 @@
-using System;
-using System.Threading.Tasks;
 using Scripts.Controller.GamePlay;
-using Scripts.Data.ValueObject;
-using Scripts.Views;
 using Scripts.Context.Signals;
 using Scripts.Controller;
 using Scripts.Keys;
-using Scripts.Signals;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Zenject;
 
 namespace Scripts.Managers
@@ -22,15 +15,18 @@ namespace Scripts.Managers
         private GameBoardClick _gameBoardClick;
         
         private int _currentLevelNumber;
-        private LevelData _currentLevelData;
+        private LevelController _currentLevelController;
   
         private LevelFinishParams _cacheLevelFinishParams;
 
-        public int remainingBoardGlassBalls = 0;
         public GlassBaseBall[] _currentBoardGlassBaseBalls;
+        private bool ingame;
+
+        private LevelFinishedSignals _levelFinishedSignals;
 
         public void Awake()
         {
+            _levelFinishedSignals = new LevelFinishedSignals();
             _gameBoardClick = new GameBoardClick(this);
         }
 
@@ -58,23 +54,19 @@ namespace Scripts.Managers
 
         private async void LoadDataAndStartGame()
         {
-            _currentLevelData = await LevelDataManager.GetLevelData(_currentLevelNumber);
+            _currentLevelController = await LevelDataManager.GetLevelData(_currentLevelNumber);
             _signalBus.Fire<OnStartGameSignal>();
         }
         private void OnPlayGame()
         {
-            _currentLevelNumber = LevelDataManager.currentLevelNumber;
-            _currentLevelData = LevelDataManager.currentLevelData;
-
-            remainingBoardGlassBalls = _currentLevelData.glassBallNumber;
-            _currentBoardGlassBaseBalls = _gameBoardController.SetBoard(_currentLevelNumber,LevelDataManager.currentGameObject,_currentLevelData);
+            
+            _currentBoardGlassBaseBalls = _gameBoardController.SetBoard(_currentLevelNumber,_currentLevelController);
             _gameBoardClick.SetBoardValues(_currentBoardGlassBaseBalls);
             
 
             SubscribeEvents();
         }
 
-        private bool ingame;
         private void SubscribeEvents()
         {
             if(ingame)
@@ -92,8 +84,19 @@ namespace Scripts.Managers
         
         public void GlassBallClicked(GlassBaseBall glassBaseBall)
         {
+            if(!ingame)
+                return;
+
             glassBaseBall.Release();
         }
 
+        public void GameEnd()
+        {
+            UnSubscribeEvents();
+            _gameBoardController.LevelFinished();
+
+            _levelFinishedSignals.levelFinishParams = new LevelFinishParams { highScore = true, score = 25 };
+            _signalBus.Fire(_levelFinishedSignals);
+        }
     }
 }

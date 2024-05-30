@@ -11,5 +11,12 @@ namespace Scripts.Data.ValueObject
         public string title;
         public int glassBallNumber;
         public List<GlassBaseBall> glassBaseBalls;
+        public List<GlassBallRow> levelData;
+    }
+
+    [Serializable]
+    public struct GlassBallRow
+    {
+        [FormerlySerializedAs("boardRow")] public GlassBaseBall[] boardColumn;
     }
 }

@@ -5,7 +5,7 @@ namespace Scripts.Context.Signals
 {
     public class LevelFinishedSignals
     {
-        public LevelFinishParams _levelFinishParams;
+        public LevelFinishParams levelFinishParams;
     }
     public class OnGameInitializeSignal
     {

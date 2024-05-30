@@ -11,8 +11,7 @@ namespace Scripts.Managers
     public class LevelDataManager
     {
         public static int currentLevelNumber;
-        public static LevelData currentLevelData;
-        public static LevelController currentGameObject;
+        public static LevelController CurrentLevelController;
         public static LevelFinishParams levelFinishParams;
         private static string currentLevelTitle;
 
@@ -22,23 +21,21 @@ namespace Scripts.Managers
         {
             currentLevelNumber = levelNumber;
         }
-        public static LevelData GetLevelData()
+        public static LevelController GetLevelData()
         {
-            return currentLevelData;
+            return CurrentLevelController;
         } 
-        public static async Task<LevelData> GetLevelData(int i)
+        public static async Task<LevelController> GetLevelData(int i)
         {
 
             AsyncOperationHandle<GameObject> _asyncOperationHandle
                 = Addressables.LoadAssetAsync<GameObject>($"Levels/Level_0.prefab");
             
             await _asyncOperationHandle.Task;
-            //Debug.Log("_asyncOperationHandle"+i+"finished");
-
-            currentGameObject = _asyncOperationHandle.Result.gameObject.GetComponent<LevelController>();
-            LevelData levelData = currentGameObject.levelData;
-            currentLevelData = levelData;
-            return levelData;
+            GameObject levelObject = GameObject.Instantiate(_asyncOperationHandle.Result.gameObject);
+            LevelController currentLevelController = levelObject.GetComponent<LevelController>();
+            CurrentLevelController = currentLevelController;
+            return CurrentLevelController;
         }
 
         public void ReleaseAsset()

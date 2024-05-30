@@ -13,69 +13,65 @@ namespace Scripts.Controller.GamePlay
         [SerializeField] private Transform _boardHolder;
         
         public GlassBaseBall[] currentBoardGlassBalls;
-        public Dictionary<char, Mesh> meshData;
+        public GlassBaseBall[,] boardGlassBall2dArray;
         
         private int[] _currentBoardParentCount;
         
         private int _currentLevelNumber;
         private LevelData _currentLevelData;
-        private LevelController _currentGameObject;
+        private LevelController _currentLevelController;
 
         private GlassBaseBall _cacheBallObject;
+        private int _boardHeight;
+        private int _boardWidth;
 
-        private List<GlassBaseBall> simplePool = new List<GlassBaseBall>();
-
-        protected void Awake()
-        {
-            meshData = new Dictionary<char, Mesh>();
-        }
-
-        public GlassBaseBall[] SetBoard(int currentLevelNumber, LevelController currentGameObject,
-            LevelData currentLevelData)
+        public GlassBaseBall[] SetBoard(int currentLevelNumber, LevelController currentLevelController)
         {
             _currentLevelNumber = currentLevelNumber;
-            _currentLevelData = currentLevelData;
-            _currentGameObject = currentGameObject;
+            _currentLevelController = currentLevelController;
+            _currentLevelData = _currentLevelController.levelData;
 
-            Instantiate(currentGameObject);
             int ballNumber = _currentLevelData.glassBallNumber;
             currentBoardGlassBalls = _currentLevelData.glassBaseBalls.ToArray();
             
             //SetValues
+            SetBoardValues();
 
             return currentBoardGlassBalls;
         }
 
+        private void SetBoardValues()
+        {
+            _boardWidth = _currentLevelData.levelData.Count;
+            _boardHeight = _currentLevelData.levelData[0].boardColumn.Length;
+            boardGlassBall2dArray = new GlassBaseBall[_boardWidth,_boardHeight];
+            
+            for (int i = 0; i < _boardWidth; i++)
+            {
+                for (int j = 0; j < _boardHeight; j++)
+                {
+                    _cacheBallObject = _currentLevelData.levelData[i].boardColumn[j];
+                    
+                    _cacheBallObject.Init(this,i,j);
+
+                    boardGlassBall2dArray[i, j] = _cacheBallObject;
+                }
+            }
+        }
+
+        public void UnlockBallAbove(GlassBaseBall glassBaseBall)
+        {
+            if(glassBaseBall.yIndex+1 == _boardHeight)
+                return;
+
+            boardGlassBall2dArray[glassBaseBall.xIndex, glassBaseBall.yIndex + 1].isLocked = false;
+        }
+        
         public void LevelFinished()
         {
-            int glassBallNumber = _currentLevelData.glassBallNumber;
-            for (int i = 0; i < glassBallNumber; i++)
-            {
-                ReturnBoardGlassBall(currentBoardGlassBalls[i]);
-            }
+            Destroy(_currentLevelController.gameObject);
         }
 
-        private int activePoolBalls;
-        private GlassBaseBall _cacheBoardGlassBall;
-        public GlassBaseBall GetBoardTils()
-        {
-            if (simplePool.Count == 0)
-            {
-                _cacheBoardGlassBall = Instantiate(_glassBasePrefab, _boardHolder);
-                return _cacheBoardGlassBall;
-            }
 
-            _cacheBoardGlassBall = simplePool[simplePool.Count-1];
-            _cacheBoardGlassBall.gameObject.SetActive(true);
-            _cacheBoardGlassBall.Reset();
-            simplePool.Remove(_cacheBoardGlassBall);
-            return _cacheBoardGlassBall;
-        }
-
-        public void ReturnBoardGlassBall(GlassBaseBall boardGlassBaseBall)
-        {
-            boardGlassBaseBall.gameObject.SetActive(false);
-            simplePool.Add(boardGlassBaseBall);
-        }
     }
 }

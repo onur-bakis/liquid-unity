@@ -13,12 +13,11 @@ namespace Scripts.Managers
         [Inject] public SignalBus _signalBus;
 
         [SerializeField] private GameUIController _gameUIController;
-        
-        private LevelData _currentLevelData;
+
+        private LevelController _currentLevelController;
         
         public void Awake()
         {
-            _currentLevelData = new LevelData();
             _signalBus.Subscribe<OnGameInitializeSignal>(SubscribeSignals);
             _signalBus.Subscribe<LevelFinishedSignals>(UnSubscribeSignals);
         }
@@ -37,8 +36,8 @@ namespace Scripts.Managers
         
         private void OnGameStart()
         {
-            _currentLevelData = LevelDataManager.currentLevelData;
-            _gameUIController.SetStartValues(_currentLevelData.title);
+            _currentLevelController = LevelDataManager.CurrentLevelController;
+            _gameUIController.SetStartValues(_currentLevelController.levelData.title);
         }
         
         public void OnFinish()
@@ -48,7 +47,7 @@ namespace Scripts.Managers
             lfp.highScore = false;
             
             LevelFinishedSignals lfs = new LevelFinishedSignals();
-            lfs._levelFinishParams = lfp;
+            lfs.levelFinishParams = lfp;
             
             _signalBus.Fire(lfs);
         }

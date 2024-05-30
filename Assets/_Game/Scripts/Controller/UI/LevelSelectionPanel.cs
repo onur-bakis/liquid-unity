@@ -26,35 +26,27 @@ namespace Scripts.Controller.UI
         private bool _showAnim;
         private Rect _rect;
         private int levelNumber = 20;
-        private LevelData[] _levelData;
 
         private OnGameInitializeSignal _playGameInitializeSignal;
         public override void Init()
         {
             base.Init();
             _playGameInitializeSignal = new OnGameInitializeSignal();
-            _levelData = new LevelData[levelNumber];
             _levelSelectionButtons = new LevelSelectionButton[levelNumber];
             StartGettingData();
         }
 
-        private async void StartGettingData()
+        private void StartGettingData()
         {
             for (int i = 0; i < 20; i++)
             {
-                //Debug.Log(_levelData[i].title);
-                //Debug.Log("asffa");
-                _levelData[i] = await LevelDataManager.GetLevelData(i);
-                //Debug.Log(_levelData[i].title);
-                //Debug.Log("asffa");
                 _levelSelectionButtons[i] =
                     _diContainer.InstantiatePrefab(_levelSelectButtonPrefab.gameObject, LevelSelectionButtonHolder.transform).GetComponent<LevelSelectionButton>();
-                //_levelSelectionButtons[i] = Instantiate(_levelSelectButtonPrefab, LevelSelectionButtonHolder);
                 
                 int highScore = LevelDataManager.GetLevelScore(i);
                 int lastUnlock = LevelDataManager.GetNewUnlock();
                 
-                _levelSelectionButtons[i].Init(this,i,_levelData[i].title,highScore,lastUnlock,false);
+                _levelSelectionButtons[i].Init(this,i,"Level "+i,highScore,lastUnlock,false);
                 if (i == lastUnlock)
                 {
                     _currentUnLock = _levelSelectionButtons[i];
@@ -62,16 +54,13 @@ namespace Scripts.Controller.UI
             }
         }
 
-        public  override async void Show()
+        public void Show()
         {
             int lastUnlock = LevelDataManager.GetNewUnlock();
             
             base.Show();
             for (int i = 0; i < levelNumber; i++)
             {
-                Task<LevelData> las = LevelDataManager.GetLevelData(i);
-                await las;
-                _levelData[i] = las.Result;
                 int highScore = LevelDataManager.GetLevelScore(i);
                 bool animInfo = false;
                 
@@ -82,7 +71,7 @@ namespace Scripts.Controller.UI
                     _showAnim = true;
                 }
                 
-                _levelSelectionButtons[i].Init(this,i,_levelData[i].title,highScore,lastUnlock,animInfo);
+                _levelSelectionButtons[i].Init(this,i,"Level "+i,highScore,lastUnlock,animInfo);
                 
             }
             

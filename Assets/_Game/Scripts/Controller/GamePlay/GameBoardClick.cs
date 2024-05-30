@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Scripts.Context.Signals;
 using Scripts.Managers;
 using Scripts.Views;
@@ -15,6 +16,7 @@ namespace Scripts.Controller.GamePlay
         private Vector3 _cacheCameraRay;
         private Vector3 _cacheCameraRayResults;
         private float cameraDistance = 50f;
+        public int clickedBallCount;
         
         public GameBoardClick(GamePlayManager gamePlayManager)
         {
@@ -42,9 +44,18 @@ namespace Scripts.Controller.GamePlay
                     continue;
                 }
 
-                if (Vector2.Distance(_cacheCameraRayResults, glassBaseBall.transform.position)<0.5f)
+                float distance = Vector2.Distance(_cacheCameraRayResults, glassBaseBall.transform.position);
+
+                if (distance<0.5f)
                 {
+                    
+                    clickedBallCount++;
                     _gamePlayManager.GlassBallClicked(glassBaseBall);
+
+                    if (_glassBaseBalls.Length == clickedBallCount)
+                    {
+                        _gamePlayManager.GameEnd();
+                    }
                     break;
                 }
             }
