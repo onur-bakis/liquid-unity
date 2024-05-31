@@ -2,36 +2,36 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//[ExecuteInEditMode]
 public class Liquid : MonoBehaviour
 {
     public enum UpdateMode { Normal, UnscaledTime }
     public UpdateMode updateMode;
 
-    [SerializeField] float MaxWobble = 0.03f;
-    [SerializeField] float WobbleSpeedMove = 1f;
-    [SerializeField] float fillAmount = 0.5f;
-    [SerializeField] float Recovery = 1f;
-    [SerializeField] float Thickness = 1f;
+    [SerializeField] private float MaxWobble = 0.03f;
+    [SerializeField] private float WobbleSpeedMove = 1f;
+    [SerializeField] private float fillAmount = 0.5f;
+    [SerializeField] private float Recovery = 1f;
+    [SerializeField] private float Thickness = 1f;
     [Range(0, 1)] public float CompensateShapeAmount;
-    [SerializeField] Mesh mesh;
-    [SerializeField] Renderer rend;
-    Vector3 pos;
-    Vector3 lastPos;
-    Vector3 velocity;
-    Quaternion lastRot;
-    Vector3 angularVelocity;
-    float wobbleAmountX;
-    float wobbleAmountZ;
-    float wobbleAmountToAddX;
-    float wobbleAmountToAddZ;
-    float pulse;
-    float sinewave;
-    float time = 0.5f;
-    Vector3 comp;
+    [SerializeField] private Mesh mesh;
+    [SerializeField] private Renderer rend;
+    
+    private Vector3 pos;
+    private Vector3 lastPos;
+    private Vector3 velocity;
+    private Quaternion lastRot;
+    private Vector3 angularVelocity;
+    private float wobbleAmountX;
+    private float wobbleAmountZ;
+    private float wobbleAmountToAddX;
+    private float wobbleAmountToAddZ;
+    private float pulse;
+    private float sinewave;
+    private float time = 0.5f;
+    private Vector3 comp;
 
     // Use this for initialization
-    void Start()
+    private void Start()
     {
         GetMeshAndRend();
     }
@@ -41,7 +41,7 @@ public class Liquid : MonoBehaviour
         GetMeshAndRend();
     }
 
-    void GetMeshAndRend()
+    private void GetMeshAndRend()
     {
         if (mesh == null)
         {
@@ -52,7 +52,7 @@ public class Liquid : MonoBehaviour
             rend = GetComponent<Renderer>();
         }
     }
-    void Update()
+    private void Update()
     {
         float deltaTime = 0;
         switch (updateMode)
@@ -109,7 +109,7 @@ public class Liquid : MonoBehaviour
         lastRot = transform.rotation;
     }
 
-    void UpdatePos(float deltaTime)
+    private void UpdatePos(float deltaTime)
     {
 
         Vector3 worldPos = transform.TransformPoint(new Vector3(mesh.bounds.center.x, mesh.bounds.center.y, mesh.bounds.center.z));
@@ -134,8 +134,7 @@ public class Liquid : MonoBehaviour
         rend.material.SetVector("_FillAmount", pos);
     }
 
-    //https://forum.unity.com/threads/manually-calculate-angular-velocity-of-gameobject.289462/#post-4302796
-    Vector3 GetAngularVelocity(Quaternion foreLastFrameRotation, Quaternion lastFrameRotation)
+    private Vector3 GetAngularVelocity(Quaternion foreLastFrameRotation, Quaternion lastFrameRotation)
     {
         var q = lastFrameRotation * Quaternion.Inverse(foreLastFrameRotation);
         // no rotation?
@@ -164,7 +163,7 @@ public class Liquid : MonoBehaviour
         return angularVelocity;
     }
 
-    float GetLowestPoint()
+    private float GetLowestPoint()
     {
         float lowestY = float.MaxValue;
         Vector3 lowestVert = Vector3.zero;

@@ -8,15 +8,13 @@ namespace Scripts.Data.ValueObject
     [Serializable]
     public struct LevelData
     {
-        public string title;
-        public int glassBallNumber;
-        public List<GlassBaseBall> glassBaseBalls;
         public List<GlassBallRow> levelData;
+        public List<ObiRopeController> obiRopeControllers;
     }
 
     [Serializable]
     public struct GlassBallRow
     {
-        [FormerlySerializedAs("boardRow")] public GlassBaseBall[] boardColumn;
+        public GlassBaseBall[] boardColumn;
     }
 }

@@ -8,6 +8,7 @@ using Zenject;
 public class EndPanelController : PanelBase
 {
     [SerializeField] private TextMeshProUGUI highScore;
+    [SerializeField] private TextMeshProUGUI endText;
     
     [SerializeField] private TextMeshProUGUI tapToContinue;
 
@@ -24,7 +25,7 @@ public class EndPanelController : PanelBase
     public override void Show()
     {
         base.Show();
-        if (GameModel.HighScore)
+        if (GameModel.LevelFinishParams.highScore)
         {
             highScore.gameObject.SetActive(true);
             highScoreWin = true;
@@ -33,6 +34,15 @@ public class EndPanelController : PanelBase
         {
             highScore.gameObject.SetActive(false);
             highScoreWin = false;
+        }
+
+        if (GameModel.LevelFinishParams.win)
+        {
+            endText.text = "WIN";
+        }
+        else
+        {
+            endText.text = "LOSE";
         }
 
         tapToContinue.color = _cacheColor;

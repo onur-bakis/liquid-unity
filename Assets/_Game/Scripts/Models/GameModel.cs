@@ -1,3 +1,5 @@
+using Scripts.Context.Signals;
+using Scripts.Keys;
 using UnityEngine;
 
 namespace Scripts.Models
@@ -16,7 +18,7 @@ namespace Scripts.Models
 				PlayerPrefs.SetInt(KeyHighestScore,value);
 			}
 		}
-		public bool HighScore { get; set; }
+		public LevelFinishParams LevelFinishParams { get; set; }
        
 		public void Save()
 		{

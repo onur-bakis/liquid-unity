@@ -37,7 +37,7 @@ namespace Scripts.Managers
         private void OnGameStart()
         {
             _currentLevelController = LevelDataManager.CurrentLevelController;
-            _gameUIController.SetStartValues(_currentLevelController.levelData.title);
+            _gameUIController.SetStartValues("Level "+LevelDataManager.currentLevelNumber);
         }
         
         public void OnFinish()
@@ -51,6 +51,5 @@ namespace Scripts.Managers
             
             _signalBus.Fire(lfs);
         }
-        
     }
 }

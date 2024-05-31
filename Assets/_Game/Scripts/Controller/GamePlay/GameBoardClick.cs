@@ -28,6 +28,7 @@ namespace Scripts.Controller.GamePlay
         public void SetBoardValues(GlassBaseBall[] glassBaseBalls)
         {
             _glassBaseBalls = glassBaseBalls;
+            clickedBallCount = 0;
         }
 
         public void OnInputTaken(TapSignal tapSignal)
@@ -54,7 +55,7 @@ namespace Scripts.Controller.GamePlay
 
                     if (_glassBaseBalls.Length == clickedBallCount)
                     {
-                        _gamePlayManager.GameEnd();
+                        _gamePlayManager.NoMoveRemain();
                     }
                     break;
                 }

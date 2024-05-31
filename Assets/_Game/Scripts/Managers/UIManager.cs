@@ -12,7 +12,7 @@ namespace Scripts.Managers
         [SerializeField] private UIPanelController _uiPanelController;
 
         [Inject] public SignalBus _signalBus;
-        private OpenPanelSignal _openPanelSignal =new OpenPanelSignal();
+        private OpenPanelSignal _openPanelSignal = new OpenPanelSignal();
         
         public void Construct(SignalBus signalBus)
         {
