@@ -28,14 +28,14 @@ namespace Scripts.Managers
         public GlassBaseBall[] _currentBoardGlassBaseBalls;
         private bool ingame;
 
-        private LevelFinishedSignals _levelFinishedSignals;
+        private OnLevelFinishedSignals _onLevelFinishedSignals;
 
         private List<ObiRopeController> _currentLevelRopeControllers;
         private int _currentLevelRopeIndex;
         
         public void Awake()
         {
-            _levelFinishedSignals = new LevelFinishedSignals();
+            _onLevelFinishedSignals = new OnLevelFinishedSignals();
             _gameBoardClick = new GameBoardClick(this);
             _gameMergeController = new GameMergeController(this);
         }
@@ -43,6 +43,7 @@ namespace Scripts.Managers
         private void Start()
         {
             _signalBus.Subscribe<OnGameInitializeSignal>(OnGameInitialize);
+            _signalBus.Subscribe<OnLevelFinishedSignals>(GameWinButton);
         }
 
         private void Update()
@@ -109,39 +110,32 @@ namespace Scripts.Managers
         
         public void GlassBallClicked(GlassBaseBall glassBaseBall)
         {
-            if(!ingame)
+            if(!ingame || _gameMergeController.gameOnMerge)
                 return;
 
             glassBaseBall.Release();
         }
-
-        public void GameWin()
-        {
-            UnSubscribeEvents();
-            _gameBoardController.LevelFinished();
-
-            _levelFinishedSignals.levelFinishParams = new LevelFinishParams
-                { highScore = true, win = true, score = 25 };
-            GameModel.LevelFinishParams =  new LevelFinishParams
-                { highScore = true, win = true, score = 25 };
-            _signalBus.Fire(_levelFinishedSignals);
-        }
-
+        
         public void NoMoveRemain()
         {
-            Invoke(nameof(GameLose),2f);
+            Invoke("GameLose",5f);
         }
 
         public void GameLose()
         {
+            if(!ingame)
+                return;
             UnSubscribeEvents();
             _gameBoardController.LevelFinished();
 
-            _levelFinishedSignals.levelFinishParams = new LevelFinishParams
-                { highScore = false, win = false, score = 25 };
-            GameModel.LevelFinishParams =  new LevelFinishParams
-                { highScore = false, win = false, score = 25 };
-            _signalBus.Fire(_levelFinishedSignals);
+            _cacheLevelFinishParams.highScore = false;
+            _cacheLevelFinishParams.win = false;
+            _cacheLevelFinishParams.score = 0;
+
+            _onLevelFinishedSignals.levelFinishParams = _cacheLevelFinishParams;
+            LevelDataManager.levelFinishParams = _cacheLevelFinishParams;
+            
+            _signalBus.Fire(_onLevelFinishedSignals);
         }
         
         public void CheckRopeCanCut(GlassBaseBall mergedGlassBaseBall)
@@ -158,6 +152,65 @@ namespace Scripts.Managers
                 }
             }
             
+        }
+        public void GameWin()
+        {
+            if(!ingame)
+                return;
+            UnSubscribeEvents();
+            _gameBoardController.LevelFinished();
+
+            int newScore = 0;
+            foreach (var obiRopeController in _currentLevelRopeControllers)
+            {
+                newScore += obiRopeController.ropeBreakValue*100;
+            }
+
+            newScore += (_currentBoardGlassBaseBalls.Length - _gameBoardClick.clickedBallCount) * 10;
+            
+            
+            if (newScore > LevelDataManager.GetLevelScore(_currentLevelNumber))
+            {
+                LevelDataManager.SetLevelHighScore(_currentLevelNumber,newScore);  
+                _cacheLevelFinishParams.highScore = true; 
+            }
+            else
+            {
+                _cacheLevelFinishParams.highScore = false;
+            }
+            _cacheLevelFinishParams.score = newScore;
+            _cacheLevelFinishParams.win = true;
+            
+            
+            int currentLock = LevelDataManager.GetNewUnlock();
+            if (currentLock == _currentLevelNumber || currentLock == -1)
+            {
+                LevelDataManager.NewUnLock(_currentLevelNumber+1);
+            }
+
+            _onLevelFinishedSignals.levelFinishParams = _cacheLevelFinishParams;
+            LevelDataManager.levelFinishParams = _cacheLevelFinishParams;
+            _signalBus.Fire(_onLevelFinishedSignals);
+        }
+
+        public void GameWinButton()
+        {  
+            if(!ingame)
+                return;
+            
+            UnSubscribeEvents();
+            _gameBoardController.LevelFinished();
+            if (100 > LevelDataManager.GetLevelScore(_currentLevelNumber))
+            {
+                LevelDataManager.SetLevelHighScore(_currentLevelNumber,100);  
+                _cacheLevelFinishParams.highScore = true; 
+            }
+            
+            int currentLock = LevelDataManager.GetNewUnlock();
+            if (currentLock == _currentLevelNumber || currentLock == -1)
+            {
+                LevelDataManager.NewUnLock(_currentLevelNumber+1);
+            }
         }
     }
 }

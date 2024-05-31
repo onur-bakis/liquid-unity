@@ -29,7 +29,7 @@ namespace Scripts.Views
         {
             
             _levelSelectionPanel = levelSelectionPanel;
-            _levelName.text = "Level "+(id+1)+" - "+name;
+            _levelName.text = "Level "+(id+1);
             _id = id;
             _isLocked = false;
             

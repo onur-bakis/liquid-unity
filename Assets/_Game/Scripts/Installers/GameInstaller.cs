@@ -30,14 +30,13 @@ namespace _Game.Scripts.Installers
             SignalBusInstaller.Install(Container);
             
             Container.DeclareSignal<StartAppSignal>();
-            Container.DeclareSignal<TapSignal>();
+            Container.DeclareSignal<TapSignal>().OptionalSubscriber();
             Container.DeclareSignal<OnStartGameSignal>();
             Container.DeclareSignal<OpenPanelSignal>();
             Container.DeclareSignal<OnScoreChangeSignal>();
             Container.DeclareSignal<StartAppSignal>();
-            Container.DeclareSignal<TapSignal>();
             Container.DeclareSignal<OnGameInitializeSignal>();
-            Container.DeclareSignal<LevelFinishedSignals>();
+            Container.DeclareSignal<OnLevelFinishedSignals>();
             Container.DeclareSignal<ResetGameSignal>();
             Container.DeclareSignal<TapToContinueSignal>();
             

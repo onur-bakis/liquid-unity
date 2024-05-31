@@ -18,8 +18,6 @@ namespace Scripts.Models
 				PlayerPrefs.SetInt(KeyHighestScore,value);
 			}
 		}
-		public LevelFinishParams LevelFinishParams { get; set; }
-       
 		public void Save()
 		{
 			PlayerPrefs.Save();

@@ -14,30 +14,27 @@ namespace Scripts.Managers
 
         [SerializeField] private GameUIController _gameUIController;
 
-        private LevelController _currentLevelController;
         
         public void Awake()
         {
+            _signalBus.Subscribe<OnGameInitializeSignal>(OnGameStart);
             _signalBus.Subscribe<OnGameInitializeSignal>(SubscribeSignals);
-            _signalBus.Subscribe<LevelFinishedSignals>(UnSubscribeSignals);
+            _signalBus.Subscribe<OnLevelFinishedSignals>(UnSubscribeSignals);
         }
 
         private void UnSubscribeSignals()
         {
-            _signalBus.Unsubscribe<OnStartGameSignal>(OnGameStart);
             _signalBus.Unsubscribe<OnScoreChangeSignal>(_gameUIController.OnScoreChange);
         }
 
         private void SubscribeSignals()
         {
-            _signalBus.Subscribe<OnStartGameSignal>(OnGameStart);
             _signalBus.Subscribe<OnScoreChangeSignal>(_gameUIController.OnScoreChange);
         }
-        
-        private void OnGameStart()
+
+        private void OnGameStart(OnGameInitializeSignal onGameInitializeSignal)
         {
-            _currentLevelController = LevelDataManager.CurrentLevelController;
-            _gameUIController.SetStartValues("Level "+LevelDataManager.currentLevelNumber);
+            _gameUIController.SetStartValues("Level "+ (onGameInitializeSignal.levelNumber + 1));
         }
         
         public void OnFinish()
@@ -45,9 +42,11 @@ namespace Scripts.Managers
             LevelFinishParams lfp = new LevelFinishParams();
             lfp.score = 100;
             lfp.highScore = false;
+            lfp.win = true;
             
-            LevelFinishedSignals lfs = new LevelFinishedSignals();
+            OnLevelFinishedSignals lfs = new OnLevelFinishedSignals();
             lfs.levelFinishParams = lfp;
+            LevelDataManager.levelFinishParams = lfp;
             
             _signalBus.Fire(lfs);
         }

@@ -299,6 +299,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rigidbody2D: {fileID: 6028917333534022807}
+  _collider2D: {fileID: 319170799273781330}
   _textMeshPro: {fileID: 7807413252460596878}
   _fakeLiquidRenderer: {fileID: 3569985659618348343}
   ballMaterials:

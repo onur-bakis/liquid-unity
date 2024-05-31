@@ -93,18 +93,12 @@ namespace Scripts.Controller.UI
 
             AsyncOperationHandle<GameObject> aOHpanelBase = Addressables.LoadAssetAsync<GameObject>($"Panels/{panel}Panel.prefab");
             await aOHpanelBase.Task;
-            // Debug.Log(aOHpanelBase.IsDone+"test"+$"Panels/{panel}Panel");
-            // Debug.Log(aOHpanelBase.IsDone+"test"+aOHpanelBase.DebugName);
-            
             if (loadedLayers.ContainsKey(panel))
             {
                 return loadedLayers[panel];
             }
             
             _cachePanelBase = _diContainer.InstantiatePrefab(aOHpanelBase.Result, layers[layerValue].transform).GetComponent<PanelBase>();
-            // _cachePanelBase.transform.parent = layers[layerValue].transform;
-            
-            //_cachePanelBase = Instantiate(aOHpanelBase.Result, layers[layerValue].transform).GetComponent<PanelBase>();
             
             _cachePanelBase.Init();
             

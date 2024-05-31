@@ -10,6 +10,7 @@ namespace Scripts.Controller
     public class GlassBaseBall : MonoBehaviour
     {
         [SerializeField] private Rigidbody2D _rigidbody2D;
+        [SerializeField] private Collider2D _collider2D;
         [SerializeField] private TextMeshPro _textMeshPro;
         [SerializeField] private MeshRenderer _fakeLiquidRenderer;
 
@@ -25,19 +26,17 @@ namespace Scripts.Controller
         
         public int yIndex;
         public int xIndex;
-        public int ballValue;
+        public int ballValue { private set;get;}
 
         private GameBoardController _gameBoardController;
         
         public void Init(GameBoardController gameBoardController
             ,int boardXIndex
-            ,int boardYIndex
-            ,int ballValueNumber)
+            ,int boardYIndex)
         {
             _gameBoardController = gameBoardController;
             xIndex = boardXIndex;
             yIndex = boardYIndex;
-            ballValue = ballValueNumber;
             Reset();
             if (yIndex == 0)
             {
@@ -53,7 +52,14 @@ namespace Scripts.Controller
             inMove = false;
 
             _rigidbody2D.gravityScale = 0f;
+            ballValue = 1;
             UpdateVisuals();
+        }
+
+        public void ChangeCollisionToMerge(bool inMerge)
+        {
+            _collider2D.enabled = !inMerge;
+            _rigidbody2D.gravityScale = inMerge?0f:1f;
         }
 
         public void Release()
@@ -71,6 +77,22 @@ namespace Scripts.Controller
                     _textMeshPro.gameObject.transform.up = Vector3.up;
                 }
             }
+        }
+
+        public void IncreaseBallValue(int value)
+        {
+            ballValue += value;
+            UpdateVisuals();
+        }
+        public void SetBallValue(int ballValue)
+        {
+            if (ballValue < 1)
+            {
+                ballValue = 1;
+            }
+
+            this.ballValue = ballValue;
+            UpdateVisuals();
         }
 
         public void UpdateVisuals()

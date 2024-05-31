@@ -43,11 +43,16 @@ namespace Scripts.Controller.GamePlay
             {
                 minBallValue = 1;
             }
-            //SetValues
+            
+            //Set board values for glass balls on board
             SetBoardValues();
+            
+            //Set glassBall ballValues
+            SetBoardGlassBallValues();
 
             return currentBoardGlassBalls;
         }
+
 
         private void SetBoardValues()
         {
@@ -62,13 +67,8 @@ namespace Scripts.Controller.GamePlay
                 {
                     _cacheBallObject = _currentLevelData.levelData[i].boardColumn[j];
                     
-                    _cacheBallObject.Init(this,
-                        i,
-                        j,
-                        Random.Range(minBallValue,maxBallValue));
+                    _cacheBallObject.Init(this, i, j);
                     
-                    
-
                     boardGlassBall2dArray[i, j] = _cacheBallObject;
                     
                     allBallList.Add(_cacheBallObject);
@@ -77,6 +77,45 @@ namespace Scripts.Controller.GamePlay
 
             currentBoardGlassBalls = allBallList.ToArray();
         }
+        
+        private void SetBoardGlassBallValues()
+        {
+            List<int> newBallValues = new List<int>();
+            
+            for (int i = 0; i < currentBoardGlassBalls.Length; i++)
+            {
+                if (i< currentBoardGlassBalls.Length / 3f + 1)
+                {
+                    newBallValues.Add(maxBallValue-1);
+                }
+                else if (i < (currentBoardGlassBalls.Length / 3f) * 2f )
+                {
+                    newBallValues.Add(maxBallValue-2);
+                }
+                else if (i<currentBoardGlassBalls.Length-3)
+                {
+                    newBallValues.Add(maxBallValue-3);
+                }
+                else
+                {
+                    newBallValues.Add(maxBallValue-4);
+                }
+            }
+            //Set ball values on the board
+            AssignBoardGlassBallValues(newBallValues);
+        }
+        
+        private void AssignBoardGlassBallValues(List<int> ballValues)
+        {
+            foreach (var boardGlassBall in currentBoardGlassBalls)
+            {
+                int newBallValue = ballValues[Random.Range(0, ballValues.Count)];
+                ballValues.Remove(newBallValue);
+
+                boardGlassBall.SetBallValue(newBallValue);
+            }
+        }
+
 
         public void UnlockBallAbove(GlassBaseBall glassBaseBall)
         {

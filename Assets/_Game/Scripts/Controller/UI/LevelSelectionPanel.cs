@@ -25,7 +25,7 @@ namespace Scripts.Controller.UI
         private LevelSelectionButton _currentUnLock;
         private bool _showAnim;
         private Rect _rect;
-        private int levelNumber = 20;
+        private int levelNumber = 10;
 
         private OnGameInitializeSignal _playGameInitializeSignal;
         public override void Init()
@@ -38,7 +38,7 @@ namespace Scripts.Controller.UI
 
         private void StartGettingData()
         {
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < levelNumber; i++)
             {
                 _levelSelectionButtons[i] =
                     _diContainer.InstantiatePrefab(_levelSelectButtonPrefab.gameObject, LevelSelectionButtonHolder.transform).GetComponent<LevelSelectionButton>();
@@ -54,7 +54,7 @@ namespace Scripts.Controller.UI
             }
         }
 
-        public void Show()
+        public override void Show()
         {
             int lastUnlock = LevelDataManager.GetNewUnlock();
             

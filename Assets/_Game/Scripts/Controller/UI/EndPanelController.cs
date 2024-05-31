@@ -1,4 +1,5 @@
 using DG.Tweening;
+using Scripts.Managers;
 using Scripts.Models;
 using Scripts.Views.Common;
 using TMPro;
@@ -25,7 +26,7 @@ public class EndPanelController : PanelBase
     public override void Show()
     {
         base.Show();
-        if (GameModel.LevelFinishParams.highScore)
+        if (LevelDataManager.levelFinishParams.highScore)
         {
             highScore.gameObject.SetActive(true);
             highScoreWin = true;
@@ -36,7 +37,7 @@ public class EndPanelController : PanelBase
             highScoreWin = false;
         }
 
-        if (GameModel.LevelFinishParams.win)
+        if (LevelDataManager.levelFinishParams.win)
         {
             endText.text = "WIN";
         }

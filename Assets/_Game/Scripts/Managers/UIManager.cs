@@ -39,7 +39,7 @@ namespace Scripts.Managers
         private void SubscribeEvents()
         {
             _signalBus.Subscribe<OnGameInitializeSignal>(OnPlayGameInitialize);
-            _signalBus.Subscribe<LevelFinishedSignals>(OnLevelFinished);
+            _signalBus.Subscribe<OnLevelFinishedSignals>(OnLevelFinished);
             _signalBus.Subscribe<ResetGameSignal>(OnReset);
             _signalBus.Subscribe<TapToContinueSignal>(OnTapToContinue);
         }
@@ -47,7 +47,7 @@ namespace Scripts.Managers
         private void UnSubscribeEvents()
         {
             _signalBus.Unsubscribe<OnGameInitializeSignal>(OnPlayGameInitialize);
-            _signalBus.Unsubscribe<LevelFinishedSignals>(OnLevelFinished);
+            _signalBus.Unsubscribe<OnLevelFinishedSignals>(OnLevelFinished);
             _signalBus.Unsubscribe<ResetGameSignal>(OnReset);
             _signalBus.Unsubscribe<TapToContinueSignal>(OnTapToContinue);
         }
@@ -71,7 +71,7 @@ namespace Scripts.Managers
             _signalBus.Fire(_openPanelSignal);
         }
         
-        private void OnLevelFinished(LevelFinishedSignals levelFinishedSignals)
+        private void OnLevelFinished(OnLevelFinishedSignals onLevelFinishedSignals)
         {
             _openPanelSignal.uiPanelTypes = UIPanelTypes.EndScreen;
             _signalBus.Fire(_openPanelSignal);

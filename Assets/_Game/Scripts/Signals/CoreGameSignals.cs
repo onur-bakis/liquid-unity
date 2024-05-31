@@ -3,7 +3,7 @@ using UnityEngine.Events;
 
 namespace Scripts.Context.Signals
 {
-    public class LevelFinishedSignals
+    public class OnLevelFinishedSignals
     {
         public LevelFinishParams levelFinishParams;
     }
